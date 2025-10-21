@@ -1,21 +1,22 @@
 import os,sys
 sys.path.append('~GrovePi/Software/Python')
 sys.path.append('~GrovePi/Software/Python/grove_rgb_lcd')
-
-
+import time
 import grovepi
-from grove_rgb_lcd import *
+import grove_rgb_lcd as lcd
 
 # Grove Ultrasonic Ranger connectd to digital port 2
 ultrasonic_ranger = 2
 # potentiometer connected to analog port A0 as input
 potentiometer = 0
 
-grovepi.pinMode(potentiometer,"INPUT")
+grovepi.pinMode(potentiometer,"INPUT") #configure grovepi
 
 
 # clear lcd screen  before starting main loop
-setText_norefresh("")
+lcd.setText("")
+lcd.setRGB(0,0,0) #set to white
+
 adc_ref = 5
 grove_vcc= 5
 full_angle= 300
@@ -31,11 +32,12 @@ while True:
 
     # TODO: format LCD text according to threshhold
     if(range <= thresh_cm):
-      setText_norefresh((str)(thresh_cm) + " OBJ PRES")
+      lcd.setRGB(255,0,0) #set screen to red
+      lcd.setText_norefresh(str(thresh_cm) + " OBJ PRES" + "\n" + str(range)) #print thresh value with object present tag
     else:
-      setText_norefresh((str)(thresh_cm)+ " ")
+      lcd.setRGB(0,255,0) #set screen to green
+      lcd.setText_norefresh(str(thresh_cm)+ " " + "\n" + str(range)) #print thresh value and range
     
-    setText_norefresh("\n" + (str)(range))
-    
+    time.sleep(1) #add delay to see values on lcd clearly
   except IOError:
     print("Error")
